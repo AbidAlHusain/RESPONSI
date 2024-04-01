@@ -1,0 +1,115 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <stack>
+
+using namespace std;
+
+// vector of strings for storing drink information
+vector<string> drinks;
+
+// vector of ints for storing drink prices
+vector<int> drinkPrices;
+
+// stack of strings for storing recently added drinks
+stack<string> drinkStack;
+
+// function to tokenize a string
+vector<string> tokenize(const string& str) {
+    vector<string> tokens;
+    string token;
+    for (char c : str) {
+        if (c == ' ') {
+            tokens.push_back(token);
+            token.clear();
+        } else {
+            token += c;
+        }
+    }
+    tokens.push_back(token);
+    return tokens;
+}
+
+// function to add a drink to the vectors and stack
+void addDrink(const string& name, int price) {
+    drinks.push_back(name);
+    drinkPrices.push_back(price);
+
+    // add the drink name to the stack
+    drinkStack.push(name);
+}
+
+// function to display the drinks
+void displayDrinks() {
+    cout << "Drinks: \n";
+    for (size_t i = 0; i < drinks.size(); ++i) {
+        cout << i + 1 << ". " << drinks[i] << " - $" << drinkPrices[i] << "\n";
+    }
+    cout << "\n";
+}
+
+// function to search for a drink by keyword
+void searchDrinks(const string& keyword) {
+    vector<string> keywords = tokenize(keyword);
+
+    cout << "Search Results: \n";
+    bool found = false;
+    for (size_t i = 0; i < drinks.size(); ++i) {
+        bool allKeywordsFound = true;
+        for (const string& k : keywords) {
+            if (drinks[i].find(k) == string::npos) {
+                allKeywordsFound = false;
+                break;
+            }
+        }
+        if (allKeywordsFound) {
+            cout << drinks[i] << " - $" << drinkPrices[i] << "\n";
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "No drinks found. \n";
+    }
+    cout << "\n";
+}
+
+int main() {
+    while (true) {
+        cout << "Menu: \n1. Add a drink \n2. Display drinks \n3. Search for a drink \n4. Quit \nChoose an option: ";
+        int choice;
+        cin >> choice;
+
+        if (choice == 1) {
+            cin.ignore();
+            cout << "Enter the drink name: ";
+            string name;
+            getline(cin, name);
+            cout << "Enter the drink price: $";
+            int price;
+            cin >> price;
+
+            // add the drink to the vectors and stack
+            addDrink(name, price);
+
+            cout << "Drink added successfully. \n\n";
+        } else if (choice == 2) {
+            displayDrinks();
+        } else if (choice == 3) {
+            cin.ignore();
+            cout << "Enter the keyword for search: ";
+            string keyword;
+            getline(cin, keyword);
+
+            // search for the drink by keyword
+            searchDrinks(keyword);
+        } else if (choice == 4) {
+            cout << "Thank you for using our drink ordering system. \n";
+            break;
+        } else {
+            cout << "Invalid option. Please try again. \n\n";
+        }
+    }
+
+    return 0;
+}
